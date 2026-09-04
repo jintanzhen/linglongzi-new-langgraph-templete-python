@@ -25,6 +25,7 @@
 - Python >= 3.10
 - PostgreSQL（需启用 [pgvector](https://github.com/pgvector/pgvector) 扩展）
 - 阿里云百炼（DashScope）API Key
+- Redis
 
 ### 知识库表结构
 
@@ -75,6 +76,37 @@ langgraph dev
 ```
 
 启动后可在 [LangGraph Studio](https://langchain-ai.github.io/langgraph/concepts/langgraph_studio/) 中与 Agent 对话、调试工具调用，本地代码改动会自动热重载。
+
+## 使用 Docker Compose 启动（可选）
+
+若已安装 [Docker](https://www.docker.com/) 与 LangGraph CLI，可通过项目根目录的 `docker-compose.yml` 一键启动 Redis、PostgreSQL 与 LangGraph API 服务。
+
+1. 创建并填写环境变量文件（`docker-compose.yml` 中 `langgraph-api` 服务通过 `env_file` 读取 `.env`）：
+
+```bash
+cp .env.example .env
+# 编辑 .env，填入 DASHSCOPE_API_KEY 等必填配置
+```
+
+2. 构建 LangGraph 服务镜像。**镜像标签必须与 `docker-compose.yml` 中 `langgraph-api.image` 保持一致**（默认 `linglongzi-new-langgraph-templete-python:0.1.0`，如需修改请两处同步）：
+
+```bash
+langgraph build -t linglongzi-new-langgraph-templete-python:0.1.0
+```
+
+3. 后台启动全部服务：
+
+```bash
+docker compose up -d
+```
+
+启动完成后：
+
+- LangGraph API 服务映射到宿主机 `8123` 端口（容器内 `8000`），可通过 `http://localhost:8123` 访问。
+- 查看日志：`docker compose logs -f langgraph-api`。
+- 停止并移除服务：`docker compose down`。
+
+> 注意：`docker-compose.yml` 自带的 PostgreSQL 仅用于本地快速演示（标准 `postgres:16` 镜像，未预装 pgvector），知识库建表、pgvector 扩展及数据写入请根据实际部署方案另行准备。
 
 ## 测试与代码质量
 
