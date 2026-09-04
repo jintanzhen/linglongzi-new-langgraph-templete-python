@@ -14,7 +14,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"        # 宿主机5432 → 容器5432
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -35,3 +37,6 @@ services:
     environment:
       REDIS_URI: redis://redis:6379
       DATABASE_URI: postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+
+volumes:
+  pgdata:
