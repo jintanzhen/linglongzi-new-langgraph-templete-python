@@ -94,6 +94,12 @@ cp .env.example .env
 langgraph build -t linglongzi-new-langgraph-templete-python:0.1.0
 ```
 
+如果没有安装langgraph CLI，需要先全局安装
+
+```bash
+uv tool install langgraph-cli[inmem]
+```
+
 3. 后台启动全部服务：
 
 ```bash
